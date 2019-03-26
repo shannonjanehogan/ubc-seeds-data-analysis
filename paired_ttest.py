@@ -1,4 +1,6 @@
 import pandas as pd
+from scipy import stats
+import matplotlib.pyplot as plt
 
 ## p values, t value, degrees of freedom
 culled_data = pd.read_csv("psych_data.csv")
@@ -58,3 +60,16 @@ print(cleaned_records[['item_per_kilo_before','item_per_kilo_after']].describe()
 
 cleaned_records[['item_per_kilo_before', 'item_per_kilo_after']].plot(kind='box')
 plt.savefig('boxplot_outliers.png')
+
+cleaned_records['item_per_kilo_difference'] = cleaned_records['item_per_kilo_before'] - cleaned_records['item_per_kilo_after']
+
+cleaned_records['item_per_kilo_difference'].plot(kind='hist', title='Item Per Kilo Difference Histogram')
+plt.savefig('item_per_kilo_difference_histogram.png')
+
+stats.probplot(cleaned_records['item_per_kilo_difference'], plot=plt)
+plt.title('Item Per Kilo Difference Q-Q Plot')
+plt.savefig('item_per_kilo_difference_qq_plot.png')
+
+print(stats.shapiro(cleaned_records['item_per_kilo_difference']))
+
+print(stats.ttest_rel(cleaned_records['item_per_kilo_before'], cleaned_records['item_per_kilo_after']))
